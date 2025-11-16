@@ -10,6 +10,8 @@ from openpyxl.chart.label import DataLabelList
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter, column_index_from_string
 from openpyxl.worksheet.worksheet import Worksheet
+
+
 from invoice_group_excel.kmexcel.excel.types.formula import FormulaDefinition, FormulaTemplate
 from invoice_group_excel.kmexcel.excel.types.style import SheetStyle, apply_style, CellStyle
 
@@ -28,6 +30,9 @@ class ExcelManager:
     def get_sheet(self, name: str) -> Worksheet:
         return self.workbook[name]
 
+    def get_sheet_names(self) -> list[str]:
+        return self.workbook.sheetnames
+
     def remove_sheet(self, name: str) -> None:
         if name not in self.workbook.sheetnames:
             raise ValueError(f'Sheet "{name}" not found')
@@ -36,7 +41,7 @@ class ExcelManager:
     # ------------------------------------------------------------------------------------------------------------------
     # DANE
     # ------------------------------------------------------------------------------------------------------------------
-    def read_sheet(self, sheet_name: str) -> list[dict[str, Any]]:
+    def read_sheet(self, sheet_name: str,exeption_read: dict[str,list[Any]] | None = None) -> list[dict[str, Any]]:
         dict_keys = []
         list_of_dicts = []
         sheet = self.get_sheet(sheet_name)
@@ -44,7 +49,19 @@ class ExcelManager:
             if i == 0:
                 dict_keys = [cell.value for cell in row]
             else:
-                list_of_dicts.append(dict(zip(dict_keys,  [cell.value for cell in row])))
+                dict_data = dict(zip(dict_keys,  [cell.value for cell in row]))
+                if not exeption_read:
+                    list_of_dicts.append(dict_data)
+                else:
+                    skip = False
+                    for ex_k,ex_v in exeption_read.items():
+                        if dict_data[ex_k] in ex_v:
+                            skip = True
+                    if skip:
+                        continue
+                    else:
+                        list_of_dicts.append(dict_data)
+
         return list_of_dicts
 
 
