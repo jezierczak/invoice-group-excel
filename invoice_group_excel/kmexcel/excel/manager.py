@@ -41,7 +41,7 @@ class ExcelManager:
     # ------------------------------------------------------------------------------------------------------------------
     # DANE
     # ------------------------------------------------------------------------------------------------------------------
-    def read_sheet(self, sheet_name: str,exeption_read: dict[str,list[Any]] | None = None) -> list[dict[str, Any]]:
+    def read_sheet(self, sheet_name: str, exception_read: dict[str,list[Any]] | None = None) -> list[dict[str, Any]]:
         dict_keys = []
         list_of_dicts = []
         sheet = self.get_sheet(sheet_name)
@@ -50,12 +50,12 @@ class ExcelManager:
                 dict_keys = [cell.value for cell in row]
             else:
                 dict_data = dict(zip(dict_keys,  [cell.value for cell in row]))
-                if not exeption_read:
+                if not exception_read:
                     list_of_dicts.append(dict_data)
                 else:
                     skip = False
-                    for ex_k,ex_v in exeption_read.items():
-                        if dict_data[ex_k] in ex_v:
+                    for ex_k,ex_v in exception_read.items() :
+                        if row[column_index_from_string(ex_k)] == ex_v:
                             skip = True
                     if skip:
                         continue
@@ -195,7 +195,10 @@ class ExcelManager:
         end_col = column_index_from_string(end_col_letter) if end_col_letter else ws.max_column
 
         for col in range(start_col, end_col + 1):
-            cell = ws.cell(row=row_index, column=col)
+            if row_index < 0:
+                cell = ws.cell(row=ws.max_row + 1 + row_index, column=col)
+            else:
+                cell = ws.cell(row=row_index, column=col)
             if isinstance(cell, Cell):
                 apply_style(cell, style)
 
@@ -334,7 +337,7 @@ class ExcelManager:
     def _load_or_create(self) -> None:
         path = Path(self.filepath)
         if path.exists():
-            self.workbook = load_workbook(self.filepath)
+            self.workbook = load_workbook(self.filepath, data_only=True)
         else:
             self.workbook = Workbook()
             if self.workbook.active is not None:

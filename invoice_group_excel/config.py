@@ -10,7 +10,7 @@ class Config:
     date_columns =["B"]
     date_format = "MM-DD-YYYY"
 
-    summary_description = {"A":"SUMMARY","D":"=SUM(D2:D{last})","E":"=SUM(E2:E{last})","F":"=SUM(F2:F{last})","G":"=SUM(G2:G{last})"}
 
+    summary_col_description = "A","SUMMARY"
 
 CFG: Config = Config()

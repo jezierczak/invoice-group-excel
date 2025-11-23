@@ -1,23 +1,21 @@
-[project]
-name = "invoice-group-excel"
-version = "0.1.0"
-description = "Groups invoice data provided in excell file"
-authors = [
-    {name = "Jarosław Jezierczak",email = "jezierczak@gmail.com"}
-]
-license = {text = "MIT"}
-readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "pandas (>=2.3.3,<3.0.0)",
-    "openpyxl (>=3.1.5,<4.0.0)"
-]
-
 [tool.poetry]
+name = "invoice_group_excel"
+version = "0.1.4"
+description = "Tool that groups excell rows with specified conditions"
+authors = ["Jarosław Jezierczak <jezierczak@gmail.com>"]
+license = "Free"
+readme = "PYPI_README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+openpyxl = "^3.1.5"
+
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^9.0.1"
+pytest = "^8.4.2"
+mypy = "^1.18.2"
+pytest-cov = "^7.0.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
